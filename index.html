@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Launch Studio</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Launch Studio makes launch films, product demos and motion for product teams. Scripted, animated and scored in-house.">
+<meta name="theme-color" content="#fafafa">
+<link rel="icon" href="assets/img/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@1,400;1,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=7">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="nav-bar">
+    <a class="brand" href="#top" aria-label="Launch Studio home">
+      <span class="mark" aria-hidden="true"></span><span>Launch Studio</span>
+    </a>
+
+    <div class="np" id="np" aria-label="Now playing">
+      <span class="np-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      <span class="np-text"><small>Now playing</small><b id="np-title">Reel 2026</b></span>
+      <button type="button" class="np-btn" id="np-prev" aria-label="Previous film"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3v10M13 3 6 8l7 5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button>
+      <button type="button" class="np-btn np-play" id="np-play" aria-label="Play"><svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l8 5-8 5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3v10M10.5 3v10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <button type="button" class="np-btn" id="np-next" aria-label="Next film"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12 3v10M3 3l7 5-7 5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button>
+    </div>
+
+    <a class="btn btn-dark nav-cta" href="#book" data-book>Book a call</a>
+    <button class="menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+  </div>
+  <nav class="menu" id="menu" hidden aria-label="Primary">
+    <a href="#work">Work</a><a href="#services">Services</a><a href="#process">Process</a><a href="#faq">FAQ</a><a href="#book" data-book>Book a call</a>
+  </nav>
+</header>
+
+<!-- mini player (opened from "Now playing") -->
+<aside class="mini" id="mini" hidden aria-label="Mini player">
+  <video id="mini-video" playsinline controls preload="metadata" poster="assets/img/reel-poster.jpg?v=7"></video>
+  <div class="mini-bar">
+    <span id="mini-title">Reel 2026</span>
+    <span class="mini-actions">
+      <button type="button" class="mini-x" id="mini-expand" aria-label="Open full size"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button type="button" class="mini-x" id="mini-close" aria-label="Close player">×</button>
+    </span>
+  </div>
+</aside>
+
+<main id="top">
+
+<!-- ============ HERO: floating objects that drop when touched ============ -->
+<section class="hero" id="hero" aria-labelledby="hero-title">
+  <div class="stage" id="stage">
+
+    <div class="obj" data-cursor="Grab" data-kind="rocket" style="--x:16%;--y:24%;--w:clamp(120px,15vw,220px);--r:-14deg">
+      <div class="obj-in" data-cursor="Grab"><img src="assets/img/obj-rocket.png?v=7" alt="" draggable="false"><canvas></canvas></div>
+    </div>
+    <div class="obj" data-cursor="Grab" data-kind="clap" style="--x:50%;--y:18%;--w:clamp(110px,12vw,180px);--r:6deg">
+      <div class="obj-in" data-cursor="Grab"><img src="assets/img/obj-clap.png?v=7" alt="" draggable="false"><canvas></canvas></div>
+    </div>
+    <div class="obj obj-sm-hide" data-cursor="Grab" data-kind="key" style="--x:84%;--y:27%;--w:clamp(90px,9vw,140px);--r:10deg">
+      <div class="obj-in" data-cursor="Grab"><img src="assets/img/obj-key.png?v=7" alt="" draggable="false"><canvas></canvas></div>
+    </div>
+    <div class="obj obj-clock" data-cursor="Grab" data-kind="clock" style="--x:78%;--y:73%;--w:clamp(150px,17vw,250px);--r:-8deg">
+      <div class="obj-in" data-cursor="Grab"><img src="assets/img/obj-clock.png?v=7" alt="" draggable="false"><canvas></canvas></div>
+    </div>
+
+    <div class="obj obj-ui obj-notif" data-cursor="Grab" style="--x:20%;--y:75%;--w:clamp(230px,22vw,300px);--r:0deg">
+      <div class="obj-in" data-cursor="Grab">
+        <div class="notif">
+          <div class="notif-card">
+            <span class="avatar" aria-hidden="true">M</span>
+            <div><b>Maya, Head of Product</b><p>Launch is on Tuesday. Can the video be ready?</p></div>
+            <time>now</time>
+          </div>
+          <span class="notif-stack" aria-hidden="true"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="obj obj-ui obj-sm-hide" data-cursor="Grab" style="--x:14%;--y:50%;--w:clamp(200px,17vw,240px);--r:-4deg">
+      <div class="obj-in" data-cursor="Grab">
+        <div class="render">
+          <div class="render-top"><span class="file-ico" aria-hidden="true"></span><b>launch_film_final.mp4</b></div>
+          <span class="render-bar"><i></i></span>
+          <div class="render-foot"><span class="render-state">Exporting</span><span class="render-pct">0%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="obj obj-ui obj-sm-hide" data-cursor="Grab" style="--x:87%;--y:50%;--w:clamp(78px,7vw,104px);--r:12deg">
+      <div class="obj-in" data-cursor="Grab"><div class="sticker"><span class="mark" aria-hidden="true"></span></div></div>
+    </div>
+
+    <div class="hero-copy">
+      <h1 id="hero-title">Make your launch<br>impossible to ignore.</h1>
+      <p>Launch films, product demos and motion for teams shipping something new.</p>
+      <a class="btn btn-dark hero-cta" href="#book" data-book>Book a call</a>
+      <a class="down" href="#statement" aria-label="Scroll to content"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </div>
+  <p class="hero-hint" id="hero-hint">Touch an object</p>
+  <button type="button" class="reset" id="reset" hidden>Put everything back</button>
+</section>
+
+<!-- ============ SHOWREEL: silent loop, grows as you scroll ============ -->
+<section class="reel" id="reel" aria-label="Showreel">
+  <div class="reel-frame" id="reel-frame">
+    <video data-src="assets/video/reel-loop.mp4?v=7" poster="assets/img/reel-poster.jpg?v=7" muted loop playsinline autoplay preload="none" aria-hidden="true" tabindex="-1" disablepictureinpicture></video>
+  </div>
+</section>
+
+<!-- ============ STATEMENT ============ -->
+<section class="statement band" id="statement" aria-label="Our approach">
+  <p class="blur-in" id="blur-in">Your product is complicated.<br>Your story shouldn't be.<br>We make the right thing obvious.</p>
+</section>
+
+<!-- ============ WORK (episodes) ============ -->
+<section class="work wrap" id="work" aria-labelledby="work-title">
+  <h2 class="sr-only" id="work-title">Selected work</h2>
+
+  <article class="ep">
+    <button class="ep-media" type="button" data-cursor="Play" data-play="dig-ai" aria-label="Watch the DIG AI launch film">
+      <video data-src="assets/video/dig-ai-preview.mp4?v=7" poster="assets/img/dig-ai-poster.jpg?v=7" muted loop playsinline preload="none"></video>
+      <span class="scrub" aria-hidden="true"><i></i></span><span class="scrub-tc" aria-hidden="true">0:00</span>
+      <span class="pill-play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l8 5-8 5z" fill="currentColor"/></svg>Watch film</span>
+    </button>
+    <div class="ep-text">
+      <p class="label">Product launch, 2026</p>
+      <h3>DIG AI</h3>
+      <p>Over half of social content is video. A one-minute launch film for an AI that tells brands what people are really saying about them.</p>
+      <img class="ep-obj" src="assets/img/obj-rocket.png?v=7" alt="" loading="lazy">
+    </div>
+  </article>
+
+  <article class="ep ep-flip">
+    <button class="ep-media" type="button" data-cursor="Play" data-play="latentgraph" aria-label="Watch the LatentGraph launch film">
+      <video data-src="assets/video/latentgraph-preview.mp4?v=7" poster="assets/img/latentgraph-poster.jpg?v=7" muted loop playsinline preload="none"></video>
+      <span class="scrub" aria-hidden="true"><i></i></span><span class="scrub-tc" aria-hidden="true">0:00</span>
+      <span class="pill-play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l8 5-8 5z" fill="currentColor"/></svg>Watch film</span>
+    </button>
+    <div class="ep-text">
+      <p class="label">Launch film, 2026</p>
+      <h3>LatentGraph</h3>
+      <p>The engineering brain, explained. Architecture, intent and design decisions mapped out in 96 seconds.</p>
+      <img class="ep-obj" src="assets/img/obj-key.png?v=7" alt="" loading="lazy">
+    </div>
+  </article>
+
+  <article class="ep">
+    <button class="ep-media" type="button" data-cursor="Play" data-play="island" aria-label="Watch the Island feature film">
+      <video data-src="assets/video/island-preview.mp4?v=7" poster="assets/img/island-poster.jpg?v=7" muted loop playsinline preload="none"></video>
+      <span class="scrub" aria-hidden="true"><i></i></span><span class="scrub-tc" aria-hidden="true">0:00</span>
+      <span class="pill-play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l8 5-8 5z" fill="currentColor"/></svg>Watch film</span>
+    </button>
+    <div class="ep-text">
+      <p class="label">Feature film, 2026</p>
+      <h3>Island</h3>
+      <p>The control plane for the agentic enterprise. Agents doing real work across a company's tools, shown on the company's terms.</p>
+      <img class="ep-obj" src="assets/img/obj-clap.png?v=7" alt="" loading="lazy">
+    </div>
+  </article>
+
+  <div class="work-more">
+    <a class="link" href="https://vimeo.com/thelaunchstudio?fl=pp&amp;fe=sh" target="_blank" rel="noopener noreferrer">See the full portfolio on Vimeo →</a>
+  </div>
+</section>
+
+<!-- ============ CLIENTS ============ -->
+<section class="clients wrap" aria-label="Clients">
+  <p class="clients-label">Trusted by teams at</p>
+  <div class="logos">
+    <span class="logo" style="--src:url(../assets/logos/island.png);--ar:3.89" role="img" aria-label="Island"></span>
+    <span class="logo" style="--src:url(../assets/logos/willow.png);--ar:4.44" role="img" aria-label="Willow"></span>
+    <span class="logo logo-sq" style="--src:url(../assets/logos/g.png);--ar:.67" role="img" aria-label="G"></span>
+    <span class="logo" style="--src:url(../assets/logos/shapes.png);--ar:4.33" role="img" aria-label="Shapes"></span>
+    <span class="logo" style="--src:url(../assets/logos/mars.png);--ar:4.1" role="img" aria-label="Mars"></span>
+    <span class="logo-word">LatentGraph</span>
+    <span class="logo-word">DIG AI</span>
+  </div>
+</section>
+
+<!-- ============ SERVICES (tabs + animated UI) ============ -->
+<section class="services band" id="services" aria-labelledby="services-title">
+  <div class="wrap">
+    <h2 class="center-title" id="services-title">One studio for every frame<br>of your launch.</h2>
+    <div class="tabs-card">
+      <ol class="tabs" id="tabs">
+        <li class="tab is-on">
+          <span class="tab-bar"><i></i></span>
+          <button type="button" class="tab-btn" aria-expanded="true">Launch</button>
+          <div class="tab-body"><div><p>A launch film that makes a new product or feature feel clear, credible and worth stopping the scroll for, on the one day it matters most.</p><a class="link" href="#book" data-book>Book a call →</a></div></div>
+        </li>
+        <li class="tab">
+          <span class="tab-bar"><i></i></span>
+          <button type="button" class="tab-btn" aria-expanded="false">Explain</button>
+          <div class="tab-body"><div><p>Product demos and explainers that turn complex workflows and interfaces into something people understand the first time.</p><a class="link" href="#book" data-book>Book a call →</a></div></div>
+        </li>
+        <li class="tab">
+          <span class="tab-bar"><i></i></span>
+          <button type="button" class="tab-btn" aria-expanded="false">Convert</button>
+          <div class="tab-body"><div><p>Paid edits and social cutdowns in every format, built to move an audience toward the button you care about.</p><a class="link" href="#book" data-book>Book a call →</a></div></div>
+        </li>
+        <li class="tab">
+          <span class="tab-bar"><i></i></span>
+          <button type="button" class="tab-btn" aria-expanded="false">Build trust</button>
+          <div class="tab-body"><div><p>Customer stories and brand films that put the proof behind your product where nobody can miss it.</p><a class="link" href="#book" data-book>Book a call →</a></div></div>
+        </li>
+      </ol>
+
+      <div class="scenes" aria-hidden="true">
+        <!-- 1 Launch: post going out -->
+        <div class="scene scene-launch is-on">
+          <div class="post">
+            <div class="post-head"><span class="avatar avatar-ink"><span class="mark"></span></span><div><b>Your product</b><small>Just now</small></div></div>
+            <p>Introducing the new version. Watch the film.</p>
+            <div class="post-media"><video data-src="assets/video/reel-preview.mp4?v=7" muted loop playsinline preload="none"></video></div>
+            <div class="post-stats"><span><svg viewBox="0 0 16 16"><path d="M8 13.5S2 10 2 6a3 3 0 0 1 6-1 3 3 0 0 1 6 1c0 4-6 7.5-6 7.5z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><b data-to="1284">0</b></span><span><svg viewBox="0 0 16 16"><path d="M3 6h8l-2-2M13 10H5l2 2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg><b data-to="312">0</b></span><span><svg viewBox="0 0 16 16"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg><b data-to="48200">0</b></span></div>
+          </div>
+        </div>
+        <!-- 2 Explain: UI walkthrough -->
+        <div class="scene scene-explain">
+          <div class="app">
+            <div class="app-top"><i></i><i></i><i></i></div>
+            <div class="app-body">
+              <div class="app-side"><span></span><span class="on"></span><span></span><span></span></div>
+              <div class="app-main">
+                <span class="sk w60"></span><span class="sk w40"></span>
+                <div class="app-cards"><span></span><span></span><span></span></div>
+                <span class="app-btn">Connect data</span>
+              </div>
+            </div>
+            <span class="callout"><b>Step 2</b> Connect your data in one click</span>
+            <span class="cursor"></span>
+          </div>
+        </div>
+        <!-- 3 Convert: aspect ratios -->
+        <div class="scene scene-convert">
+          <div class="frame">
+            <video data-src="assets/video/dig-ai-preview.mp4?v=7" muted loop playsinline preload="none"></video>
+            <span class="frame-cta">Try it free</span>
+          </div>
+          <div class="ratios"><span>16:9</span><span>1:1</span><span>9:16</span></div>
+        </div>
+        <!-- 4 Trust: interview -->
+        <div class="scene scene-trust">
+          <div class="interview">
+            <div class="iv-frame">
+              <span class="iv-person"></span>
+              <span class="lower-third"><b>Your customer</b><small>Head of Operations</small></span>
+            </div>
+            <div class="iv-wave"></div>
+            <p class="iv-caption"><span>"The</span> <span>whole</span> <span>team</span> <span>switched</span> <span>over</span> <span>in</span> <span>a</span> <span>week."</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS: scroll-scrubbed editor timeline ============ -->
+<section class="process" id="process" aria-labelledby="process-title">
+  <div class="process-sticky">
+    <div class="wrap">
+      <h2 class="center-title" id="process-title">From brief to launch day<br>in about three weeks.</h2>
+
+      <div class="editor" id="editor">
+        <div class="ed-top">
+          <span class="ed-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="ed-name">launch_film.prproj</span>
+          <span class="ed-tc" id="ed-tc">00:00:00:00</span>
+        </div>
+        <div class="ed-ruler" aria-hidden="true">
+          <span>Discover</span><span>Shape</span><span>Make</span><span>Polish</span>
+        </div>
+        <div class="ed-tracks" aria-hidden="true">
+          <div class="trk"><em>T1</em><div class="lane"><span class="clip c-t" style="left:27%;width:16%">Script v2</span><span class="clip c-t" style="left:56%;width:12%">Title</span><span class="clip c-t" style="left:80%;width:14%">End card</span></div></div>
+          <div class="trk"><em>V1</em><div class="lane"><span class="clip" style="left:1%;width:22%">Brief &amp; research</span><span class="clip" style="left:26%;width:23%">Storyboard</span><span class="clip c-d" style="left:51%;width:24%">Motion</span><span class="clip c-d" style="left:76%;width:23%">Final grade</span></div></div>
+          <div class="trk"><em>A1</em><div class="lane"><span class="wave" id="wave"></span></div></div>
+          <span class="playhead" id="playhead"></span>
+        </div>
+      </div>
+
+      <ol class="phases" id="phases">
+        <li class="is-on"><b>Discover</b><span class="label">Days 1–3</span><p>One kickoff call and your assets. We learn the product, the audience and what makes it different, then come back with a direction.</p></li>
+        <li><b>Shape</b><span class="label">Week 1</span><p>Script first, your approval second, storyboard third. Nothing gets animated until the story holds up on paper.</p></li>
+        <li><b>Make</b><span class="label">Week 2</span><p>Edit, motion, sound and product UI come together in one production, with focused feedback rounds.</p></li>
+        <li><b>Polish</b><span class="label">Week 3</span><p>We refine every frame, cut the versions you need and hand over files for your site, socials, ads and deck.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DELIVERABLES strip ============ -->
+<section class="deliver" aria-labelledby="deliver-title">
+  <div class="wrap"><h2 class="left-title" id="deliver-title">More than a finished video.</h2></div>
+  <div class="strip" id="strip" tabindex="0" data-cursor="Drag" aria-label="Deliverables, scroll sideways">
+    <figure class="dcard">
+      <div class="dv dv-film"><span class="dv-play"></span><span class="dv-prog"><i></i></span><span class="dv-time">0:45</span></div>
+      <figcaption><em>Core film</em> built around your product, audience and message.</figcaption>
+    </figure>
+    <figure class="dcard">
+      <div class="dv dv-cuts"><span class="r169"></span><span class="r11"></span><span class="r916"></span></div>
+      <figcaption><em>Cutdowns</em> for social, paid, launch posts and product pages.</figcaption>
+    </figure>
+    <figure class="dcard">
+      <div class="dv dv-motion"><span></span><span></span><span></span><span></span></div>
+      <figcaption><em>A motion system</em> you can reuse for every release after this one.</figcaption>
+    </figure>
+    <figure class="dcard">
+      <div class="dv dv-files">
+        <span><b>launch_16x9.mp4</b><i></i></span>
+        <span><b>launch_1x1.mp4</b><i></i></span>
+        <span><b>launch_9x16.mp4</b><i></i></span>
+        <span><b>deck_loop.mp4</b><i></i></span>
+      </div>
+      <figcaption><em>Launch-ready files</em> exported for web, social and your deck.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ BOOK A CALL ============ -->
+<section class="book wrap" id="book" aria-labelledby="book-title">
+  <div class="book-l">
+    <h2 class="left-title" id="book-title">Book a call.</h2>
+    <p class="book-sub">Thirty minutes on the phone, no deck needed. Tell us what you're launching and when.</p>
+    <ul class="book-points">
+      <li><span class="label">First</span>You walk us through the product and the launch date.</li>
+      <li><span class="label">Then</span>We come back with a creative direction and a timeline.</li>
+      <li><span class="label">After</span>If it's a fit, we start with the script.</li>
+    </ul>
+  </div>
+
+  <div class="cal" id="cal">
+    <div class="cal-host">
+      <span class="avatar avatar-ink" aria-hidden="true"><span class="mark"></span></span>
+      <div><b>Intro call with Fakhar Kamario</b><span>30 min · Phone call</span></div>
+    </div>
+
+    <div class="cal-step" id="cal-step-1">
+      <div class="cal-head">
+        <p class="cal-month" id="cal-month">November 2026</p>
+        <div class="cal-nav">
+          <button type="button" id="cal-prev" aria-label="Previous month"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" id="cal-next" aria-label="Next month"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="cal-dow" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+      <div class="cal-grid" id="cal-grid" role="grid" aria-label="Choose a day"></div>
+      <div class="cal-times" id="cal-times" hidden>
+        <p class="cal-times-label" id="cal-day-label">Pick a time</p>
+        <div class="cal-slots" id="cal-slots" role="group" aria-label="Choose a time"></div>
+      </div>
+    </div>
+
+    <form class="cal-step cal-form" id="cal-step-2" hidden novalidate>
+      <button type="button" class="cal-back" id="cal-back"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="cal-when">Tue, Nov 10 at 21:00</span></button>
+      <p class="cal-form-note">Optional. We pass these to Calendly so you don't type them twice.</p>
+      <div class="field-row">
+        <label class="field"><span>Name</span><input id="bk-name" name="name" type="text" autocomplete="name"></label>
+        <label class="field"><span>Email</span><input id="bk-email" name="email" type="email" autocomplete="email"></label>
+      </div>
+      <label class="field"><span>Phone (we'll call you)</span><input id="bk-phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 555 000 0000"></label>
+      <label class="field"><span>What are you launching?</span><textarea id="bk-notes" name="notes" rows="2" placeholder="Product, launch date, anything useful"></textarea></label>
+    </form>
+
+    <div class="cal-foot">
+      <p class="cal-tz" id="cal-tz">Times in your time zone</p>
+      <a class="btn btn-dark" id="cal-book" href="https://calendly.com/fakharkamario/30min" target="_blank" rel="noopener noreferrer">Open Calendly</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq wrap" id="faq" aria-labelledby="faq-title">
+  <h2 class="left-title" id="faq-title">Good to know</h2>
+  <div class="faq-list">
+    <details><summary>How long does a video take?</summary><p>Most focused product films take around 2–3 weeks from kickoff to final delivery. Faster timelines can be scoped, and our fastest turnaround so far is 24 hours.</p></details>
+    <details><summary>Do you handle the script and concept?</summary><p>Yes. We can take the project from positioning, concept and script through storyboard, edit, motion, sound and final delivery.</p></details>
+    <details><summary>What do you need from us?</summary><p>Usually the product, your brand assets, access to the relevant screens and a clear goal. We help structure everything else.</p></details>
+    <details><summary>Can you make multiple versions?</summary><p>Yes. Cutdowns, social versions, alternate aspect ratios and extra exports can all be part of the scope.</p></details>
+    <details><summary>Where are you based?</summary><p>We're a small remote studio based in Pakistan, working with product teams worldwide. 200+ projects across 25+ markets so far.</p></details>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta band" id="contact" aria-labelledby="cta-title">
+  <div class="wrap cta-inner">
+    <div class="cta-copy">
+      <h2 id="cta-title">Good products deserve<br>good stories.</h2>
+      <a class="btn btn-dark" href="#book" data-book>Book a call</a>
+      <p class="cta-mail"><span id="email">hello@thelaunchstudio.org</span> <button type="button" class="link" id="copy">Copy</button></p>
+    </div>
+    <div class="ring-wrap" id="ring-wrap">
+      <svg class="ring" id="ring" viewBox="0 0 400 400" aria-hidden="true">
+        <defs><path id="circle" d="M200,200 m-150,0 a150,150 0 1,1 300,0 a150,150 0 1,1 -300,0"/></defs>
+        <text><textPath href="#circle" id="ring-text">Laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaunch</textPath></text>
+      </svg>
+      <button type="button" class="ring-btn" id="launch" data-cursor="Launch" aria-label="Launch the rocket"><img class="ring-img" src="assets/img/obj-rocket.png?v=7" alt=""></button>
+    </div>
+  </div>
+
+  <footer class="foot wrap">
+    <div class="foot-card">
+      <a class="brand brand-lg" href="#top"><span class="mark" aria-hidden="true"></span><span>Launch Studio</span></a>
+      <div class="foot-cols">
+        <div><p>Studio</p><a href="#work">Work</a><a href="#services">Services</a><a href="#process">Process</a><a href="#faq">FAQ</a><a href="#book" data-book>Book a call</a></div>
+        <div><p>Follow</p><a href="https://vimeo.com/thelaunchstudio?fl=pp&amp;fe=sh" target="_blank" rel="noopener noreferrer">Vimeo</a><a href="https://www.linkedin.com/in/fakhar-kamario-0619522a9" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="https://x.com/fakharkamario" target="_blank" rel="noopener noreferrer">X</a><a href="https://www.instagram.com/fakhar.kamario" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/share/18apBfPCtT/" target="_blank" rel="noopener noreferrer">Facebook</a></div>
+        <div><p>Contact</p><a href="mailto:hello@thelaunchstudio.org">hello@thelaunchstudio.org</a><span>Remote, worldwide</span><span>Based in Pakistan</span></div>
+      </div>
+      <div class="foot-bottom"><span>© 2026 Launch Studio</span><span>Video, motion and story</span></div>
+    </div>
+  </footer>
+</section>
+</main>
+
+<!-- ============ PLAYER ============ -->
+<dialog class="player" id="player" aria-label="Video player">
+  <div class="player-head"><p id="player-title">Film</p><button type="button" class="player-x" id="player-close" aria-label="Close video">×</button></div>
+  <video id="player-video" controls playsinline preload="none"></video>
+</dialog>
+
+<div class="cursor-pill" id="cursor-pill" aria-hidden="true"></div>
+
+<script src="vendor/matter.min.js" defer></script>
+<script src="js/site.js?v=7" defer></script>
+<script type="module" src="js/objects3d.js?v=7"></script>
+</body>
+</html>
